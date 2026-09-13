@@ -5,6 +5,10 @@
 
 ## [Unreleased]
 
+### 2026-09-14（M3-1）
+
+- Added: 共享消息协议 packages/shared/protocol——ClientMessage（register/reconnect/listRooms/createRoom/joinRoom/leaveRoom/setReady/startGame/playerAction/ping）、ServerMessage（registered/roomList/roomState/gameState/yourHand/error/pong）、RoomState/RoomSummary 公开结构、isClientMessage 类型守卫
+
 ### 2026-09-14（M2-6）—— M2 完成
 
 - Added: 覆盖率工具 @vitest/coverage-v8（^3.2.7 与 vitest 对齐）+ pnpm test:coverage 脚本；引擎行覆盖 88.75%（目标 80%）
