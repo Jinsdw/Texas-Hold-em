@@ -5,6 +5,11 @@
 
 ## [Unreleased]
 
+### 2026-09-14（M5-1）
+
+- Added: Drizzle + better-sqlite3 数据层——users/sessions/games/hands 四张表、openDatabase 工厂（WAL、幂等建表、数据目录自动创建、HOLDEM_DB_PATH 可覆盖）；3 个单元测试
+- Changed: pnpm-workspace allowBuilds 增加 better-sqlite3（原生模块编译许可）
+
 ### 2026-09-14（M4-2 / M4-3）—— M4 完成
 
 - Added: 牌桌 UI 组件——PlayingCard（花色点数/牌背）、PlayerSeat（筹码/状态/行动高亮/摊牌信息）、TableLayout（椭圆桌+座位环绕+公共牌+底池+庄家钮）、ActionBar（弃牌/过牌/跟注/加注滑块/全下）、ShowdownPanel（赢家与牌型中文展示）
