@@ -36,11 +36,7 @@ function setup(playerCount = 2, stack = 1000): { manager: RoomManager; players: 
   return { manager, players };
 }
 
-function createAndJoin(
-  manager: RoomManager,
-  players: Player[],
-  spectator = false,
-): string {
+function createAndJoin(manager: RoomManager, players: Player[], spectator = false): string {
   const host = players[0]!;
   const { roomId } = manager.createRoom(host.id, '测试房') as { roomId: string };
   for (const p of players.slice(1)) {
@@ -67,8 +63,10 @@ describe('注册与身份', () => {
     // 断线
     manager.disconnect(players[1]!.id);
     expect(
-      players[0]!.conn.ofType('roomState').at(-1)!.room.seats.find((s) => s.playerId === players[1]!.id)!
-        .connected,
+      players[0]!.conn
+        .ofType('roomState')
+        .at(-1)!
+        .room.seats.find((s) => s.playerId === players[1]!.id)!.connected,
     ).toBe(false);
 
     // 重连：新连接，重发 roomState/gameState/yourHand

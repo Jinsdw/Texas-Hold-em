@@ -23,7 +23,10 @@ const server = serve({ fetch: app.fetch, port }, (info) => {
 // @hono/node-server 的返回类型是含 Http2 的宽联合；未传 override 时实际创建标准 http.Server
 createGameServer(server as HttpServer);
 
-export function createGameServer(httpServer: HttpServer): { wss: WebSocketServer; manager: RoomManager } {
+export function createGameServer(httpServer: HttpServer): {
+  wss: WebSocketServer;
+  manager: RoomManager;
+} {
   const wss = new WebSocketServer({ noServer: true });
   const manager = new RoomManager(undefined, undefined, persistence);
   setupWebSocketHandlers(httpServer, wss, manager, authService);

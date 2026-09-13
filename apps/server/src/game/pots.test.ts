@@ -2,11 +2,7 @@ import type { Player, PlayerStatus } from '@holdem/shared';
 import { describe, expect, it } from 'vitest';
 import { buildPots } from './pots';
 
-function player(
-  id: string,
-  totalContribution: number,
-  status: PlayerStatus = 'all-in',
-): Player {
+function player(id: string, totalContribution: number, status: PlayerStatus = 'all-in'): Player {
   return {
     id,
     name: id,
@@ -27,9 +23,7 @@ describe('buildPots 边池切分', () => {
 
   it('人人等额：单一主池', () => {
     const pots = buildPots([player('a', 100), player('b', 100), player('c', 100)]);
-    expect(pots).toEqual([
-      { amount: 300, eligibleIds: ['a', 'b', 'c'] },
-    ]);
+    expect(pots).toEqual([{ amount: 300, eligibleIds: ['a', 'b', 'c'] }]);
   });
 
   it('经典三级 all-in：A500 B300 C100', () => {
@@ -43,11 +37,7 @@ describe('buildPots 边池切分', () => {
   });
 
   it('弃牌者的投入仍计入池中但无资格领取', () => {
-    const pots = buildPots([
-      player('folder', 200, 'folded'),
-      player('a', 200),
-      player('b', 100),
-    ]);
+    const pots = buildPots([player('folder', 200, 'folded'), player('a', 200), player('b', 100)]);
     expect(pots).toEqual([
       { amount: 300, eligibleIds: ['a', 'b'] }, // 主池 100×3，folder 无资格，b 有资格
       { amount: 200, eligibleIds: ['a'] }, // folder 与 a 的第二个 100

@@ -70,7 +70,9 @@ export function ActionBar({ gameState, myPlayerId }: ActionBarProps) {
           </div>
           <button
             type="button"
-            onClick={() => wsClient.playerAction({ type: 'raise', playerId: myPlayerId, amount: raiseTo })}
+            onClick={() =>
+              wsClient.playerAction({ type: 'raise', playerId: myPlayerId, amount: raiseTo })
+            }
             className="rounded-lg bg-emerald-600 px-5 py-2 font-semibold text-white hover:bg-emerald-500"
           >
             加注

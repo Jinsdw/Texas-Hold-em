@@ -12,7 +12,7 @@
 
 ## 当前进度
 
-M1 项目脚手架 ✅ 已完成——详见 [docs/PROGRESS.md](docs/PROGRESS.md)
+M1–M5 ✅ 已完成（引擎 / 联机 / 桌面 UI / 持久化与账号）——详见 [docs/PROGRESS.md](docs/PROGRESS.md)。M6（语音 / 打包 / 端到端测试）待启动。
 
 ## 环境要求
 
@@ -70,14 +70,16 @@ texas-holdem/
 
 ### apps/server（`@holdem/server`）
 
-| 包                             | 类型   | 用途                                     |
-| ------------------------------ | ------ | ---------------------------------------- |
-| hono ^4                        | 运行时 | HTTP 框架（REST + 健康检查）             |
-| @hono/node-server ^1           | 运行时 | Node 适配层（serve）                     |
-| ws ^8                          | 运行时 | WebSocket（挂载于 /ws，M3 接入游戏协议） |
-| @holdem/shared                 | 运行时 | 共享类型（workspace 链接）               |
-| tsx ^4                         | 开发   | TS 直跑 + watch 模式                     |
-| @types/node ^22 + @types/ws ^8 | 开发   | 类型定义                                 |
+| 包                             | 类型   | 用途                                       |
+| ------------------------------ | ------ | ------------------------------------------ |
+| hono ^4                        | 运行时 | HTTP 框架（REST + 健康检查 + 账号 API）    |
+| @hono/node-server ^1           | 运行时 | Node 适配层（serve）                       |
+| ws ^8                          | 运行时 | WebSocket（挂载于 /ws，游戏协议）          |
+| drizzle-orm ^0.44              | 运行时 | ORM（users/sessions/games/hands 四张表）   |
+| better-sqlite3 ^13             | 运行时 | SQLite 驱动（原生模块，数据在 apps/server/data/） |
+| @holdem/shared                 | 运行时 | 共享类型（workspace 链接）                 |
+| tsx ^4                         | 开发   | TS 直跑 + watch 模式                       |
+| @types/node ^22 + @types/ws ^8 + @types/better-sqlite3 | 开发 | 类型定义 |
 
 ## 启动步骤
 
@@ -93,8 +95,11 @@ pnpm test        # Vitest
 # 3. 启动游戏服务端（默认 3000 端口，PORT 环境变量可改）
 pnpm dev:server
 #   健康检查:  http://localhost:3000/health → {"status":"ok",...}
-#   WebSocket: ws://localhost:3000/ws（连接即收到 welcome 消息）
-#   WS 冒烟:   pnpm --filter @holdem/server smoke:ws
+#   账号 API:  POST /api/register、POST /api/login（用户名+密码，scrypt 加盐哈希）
+#   WebSocket: ws://localhost:3000/ws
+#   SQLite:    apps/server/data/holdem.db 首次启动自动建库建表
+#              （HOLDEM_DB_PATH / HOLDEM_DATA_DIR 环境变量可覆盖位置）
+#   联机冒烟:  pnpm --filter @holdem/server smoke:game   # 双客户端全流程（开局→摊牌→重连）
 
 # 4. 桌面端·浏览器开发模式（无需 Rust）
 pnpm dev:desktop # → http://localhost:5173
@@ -117,6 +122,13 @@ pnpm tauri build                      # 完整安装包
 ## 错误日志
 
 开发中遇到的每个报错（编译 / 类型 / 测试 / 运行时 / 依赖 / 环境）都记录在 [docs/ERRORS.md](docs/ERRORS.md)，包含错误现象、根因、修复方式与验证结果。
+
+## 游戏功能（已实现）
+
+- **服务器权威引擎**：Fisher-Yates 洗牌、7 选 5 手牌评估、下注轮次状态机（盲注/最小加注/加注重开/all-in/边池）、摊牌平分底池——全部纯函数，行覆盖率 90%+
+- **房间与联机**：建房/加入/离开/房主转移、就绪与开局、观战模式、断线重连（playerId + token，客户端自动指数退避重连）
+- **桌面 UI**：大厅（账号登录/注册/游客）、椭圆牌桌（座位环绕、行动高亮、庄家钮）、手牌/公共牌、操作面板（弃牌/过牌/跟注/加注滑块/全下）、摊牌结果展示
+- **持久化**：SQLite（Drizzle ORM）——用户与筹码、登录会话、每场对局、每手牌结果自动落库
 
 ## 进度文档
 

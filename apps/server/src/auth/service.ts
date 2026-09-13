@@ -4,8 +4,7 @@ import type { Db } from '../db';
 import { sessions, users } from '../db/schema';
 
 export type AuthResult =
-  | { userId: string; token: string; name: string; chips: number }
-  | { error: string };
+  { userId: string; token: string; name: string; chips: number } | { error: string };
 
 function hashPassword(password: string, salt: string): string {
   return scryptSync(password, salt, 64).toString('hex');
@@ -33,7 +32,8 @@ export class AuthService {
 
     const salt = randomBytes(16).toString('hex');
     const userId = `u-${randomBytes(6).toString('hex')}`;
-    this.db.insert(users)
+    this.db
+      .insert(users)
       .values({
         id: userId,
         username: name,

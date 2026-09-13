@@ -27,7 +27,9 @@ export function buildPots(players: readonly Player[]): Pot[] {
       amount += Math.max(0, Math.min(p.totalContribution, level) - prev);
     }
     const eligibleIds = players
-      .filter((p) => p.totalContribution >= level && p.status !== 'folded' && p.status !== 'eliminated')
+      .filter(
+        (p) => p.totalContribution >= level && p.status !== 'folded' && p.status !== 'eliminated',
+      )
       .map((p) => p.id);
     pots.push({ amount, eligibleIds });
     prev = level;

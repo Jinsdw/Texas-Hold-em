@@ -17,7 +17,11 @@ function act(
   type: PlayerAction['type'],
   amount?: number,
 ): { state: TableState; error: string | null } {
-  const action = { type, playerId, ...(type === 'raise' ? { amount: amount! } : {}) } as PlayerAction;
+  const action = {
+    type,
+    playerId,
+    ...(type === 'raise' ? { amount: amount! } : {}),
+  } as PlayerAction;
   return applyAction(state, action);
 }
 

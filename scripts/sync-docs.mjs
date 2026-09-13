@@ -13,7 +13,7 @@ import { readFileSync, writeFileSync } from 'node:fs';
 
 const arg = process.argv[2];
 if (!arg) {
-  console.error('用法: node scripts/sync-docs.mjs \'<json>\'');
+  console.error("用法: node scripts/sync-docs.mjs '<json>'");
   process.exit(1);
 }
 const opts = JSON.parse(arg);
@@ -40,7 +40,10 @@ if (opts.roadmapCheck) {
   patch('docs/ROADMAP.md', (t) => {
     let out = t;
     for (const c of checks) {
-      out = out.replace(`- [ ] ${c}`, `- [x] ${c}${opts.roadmapNote ? `（${opts.roadmapNote}）` : ''}`);
+      out = out.replace(
+        `- [ ] ${c}`,
+        `- [x] ${c}${opts.roadmapNote ? `（${opts.roadmapNote}）` : ''}`,
+      );
     }
     return out;
   });
@@ -66,7 +69,10 @@ if (opts.currentTask !== undefined) {
 
 if (opts.doneEntry) {
   patch('docs/PROGRESS.md', (t) =>
-    t.replace('## 已完成任务（最近 10 条）\n', `## 已完成任务（最近 10 条）\n\n- [x] ${opts.doneEntry}\n`),
+    t.replace(
+      '## 已完成任务（最近 10 条）\n',
+      `## 已完成任务（最近 10 条）\n\n- [x] ${opts.doneEntry}\n`,
+    ),
   );
 }
 

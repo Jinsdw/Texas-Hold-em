@@ -137,8 +137,7 @@ function advancePhase(state: TableState): void {
   state.lastAggressorId = null;
   state.actedThisRound = {};
 
-  state.phase =
-    state.phase === 'pre-flop' ? 'flop' : state.phase === 'flop' ? 'turn' : 'river';
+  state.phase = state.phase === 'pre-flop' ? 'flop' : state.phase === 'flop' ? 'turn' : 'river';
   dealCommunity(state, state.phase === 'flop' ? 3 : 1);
 
   state.actorId = nextActorAfter(state, state.dealerSeat);
@@ -172,7 +171,13 @@ function settleFoldWin(state: TableState): void {
   state.phase = 'showdown';
   state.actorId = null;
   state.showdownResult = {
-    pots: [{ amount: total, eligibleIds: [winner.id], winners: [{ playerId: winner.id, amount: total }] }],
+    pots: [
+      {
+        amount: total,
+        eligibleIds: [winner.id],
+        winners: [{ playerId: winner.id, amount: total }],
+      },
+    ],
     reveals: [],
     foldWin: true,
   };
@@ -192,11 +197,7 @@ function settleAfterAction(state: TableState): void {
   const matched = canActPlayers.every((p) => p.betThisRound === state.currentBet);
 
   // 唯一可行动者已匹配下注且其余对手全部 all-in：其行动已无意义（无人可跟注），直接 run-out
-  if (
-    canActPlayers.length === 1 &&
-    matched &&
-    contenders.some((p) => p.status === 'all-in')
-  ) {
+  if (canActPlayers.length === 1 && matched && contenders.some((p) => p.status === 'all-in')) {
     runOutBoard(state);
     return;
   }
@@ -424,8 +425,13 @@ export function legalActionsFor(state: TableState, playerId: PlayerId): LegalAct
 
 /** 剥离私有字段，得到可广播的公共快照 */
 export function toPublicState(state: TableState): GameState {
-  const { deck: _deck, hands: _hands, lastAggressorId: _agg, actedThisRound: _acted, ...pub } =
-    state;
+  const {
+    deck: _deck,
+    hands: _hands,
+    lastAggressorId: _agg,
+    actedThisRound: _acted,
+    ...pub
+  } = state;
   void _deck;
   void _hands;
   void _agg;

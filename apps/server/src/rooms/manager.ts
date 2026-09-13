@@ -238,7 +238,9 @@ export class RoomManager {
       return { error: `等待就绪：${notReady.map((p) => p.name).join('、')}` };
     }
 
-    const table = createTable(seated.map((p) => ({ id: p.playerId, name: p.name, stack: p.stack })));
+    const table = createTable(
+      seated.map((p) => ({ id: p.playerId, name: p.name, stack: p.stack })),
+    );
     // 延续上一手的庄家位置与手数（庄家轮转、handNumber 递增）
     if (room.table) {
       table.handNumber = room.table.handNumber;

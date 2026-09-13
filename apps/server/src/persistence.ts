@@ -2,7 +2,7 @@ import { randomUUID } from 'node:crypto';
 import { and, eq } from 'drizzle-orm';
 import type { Db } from './db';
 import { games, hands } from './db/schema';
-import { AuthService } from './auth/service';
+import type { AuthService } from './auth/service';
 import type { RoomPersistenceHooks } from './rooms/manager';
 
 /** 持久化钩子的 SQLite 实现：对局/手牌落库，账号玩家筹码回写 users 表 */
@@ -16,7 +16,8 @@ export class SqlitePersistence implements RoomPersistenceHooks {
 
   onGameStarted(roomId: string, playerCount: number): string {
     const id = randomUUID();
-    this.db.insert(games)
+    this.db
+      .insert(games)
       .values({ id, roomId, playerCount, startedAt: Date.now(), endedAt: null })
       .run();
     this.gamesByRoom.set(roomId, id);
@@ -31,7 +32,8 @@ export class SqlitePersistence implements RoomPersistenceHooks {
     resultJson: string,
   ): void {
     void _roomId;
-    this.db.insert(hands)
+    this.db
+      .insert(hands)
       .values({
         id: randomUUID(),
         gameId,
@@ -50,7 +52,8 @@ export class SqlitePersistence implements RoomPersistenceHooks {
 
   onGameEnded(roomId: string, gameId: string): void {
     this.gamesByRoom.delete(roomId);
-    this.db.update(games)
+    this.db
+      .update(games)
       .set({ endedAt: Date.now() })
       .where(and(eq(games.id, gameId), eq(games.roomId, roomId)))
       .run();

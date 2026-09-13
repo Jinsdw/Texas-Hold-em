@@ -45,9 +45,11 @@ export function TablePage() {
             myHand={myHand}
             showdown={gameState.showdownResult}
           />
-          {!spectator && gameState.actorId === identity.playerId && gameState.showdownResult === null && (
-            <ActionBar gameState={gameState} myPlayerId={identity.playerId} />
-          )}
+          {!spectator &&
+            gameState.actorId === identity.playerId &&
+            gameState.showdownResult === null && (
+              <ActionBar gameState={gameState} myPlayerId={identity.playerId} />
+            )}
           {gameState.showdownResult !== null && isHost && (
             <div className="mt-4 text-center">
               <button
@@ -67,7 +69,10 @@ export function TablePage() {
           </p>
           <ul className="mx-auto mb-6 max-w-md space-y-1.5">
             {room.seats.map((seat) => (
-              <li key={seat.playerId} className="flex justify-between rounded-lg bg-emerald-900/60 px-4 py-2 text-sm">
+              <li
+                key={seat.playerId}
+                className="flex justify-between rounded-lg bg-emerald-900/60 px-4 py-2 text-sm"
+              >
                 <span>
                   {seat.isHost && '👑 '}
                   {seat.name}
@@ -85,7 +90,9 @@ export function TablePage() {
                 type="button"
                 onClick={() => wsClient.setReady(!me?.ready)}
                 className={`rounded-lg px-6 py-2 font-semibold ${
-                  me?.ready ? 'border border-emerald-600 text-emerald-300' : 'bg-emerald-600 text-white hover:bg-emerald-500'
+                  me?.ready
+                    ? 'border border-emerald-600 text-emerald-300'
+                    : 'bg-emerald-600 text-white hover:bg-emerald-500'
                 }`}
               >
                 {me?.ready ? '取消就绪' : '准备'}

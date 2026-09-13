@@ -18,8 +18,7 @@ export function resolveShowdown(state: TableState): ShowdownResult | null {
   const n = state.players.length;
   const orderFromDealer = [...state.players].sort(
     (a, b) =>
-      ((a.seat - state.dealerSeat - 1 + 2 * n) % n) -
-      ((b.seat - state.dealerSeat - 1 + 2 * n) % n),
+      ((a.seat - state.dealerSeat - 1 + 2 * n) % n) - ((b.seat - state.dealerSeat - 1 + 2 * n) % n),
   );
 
   const reveals = new Map<PlayerId, ShowdownReveal>();

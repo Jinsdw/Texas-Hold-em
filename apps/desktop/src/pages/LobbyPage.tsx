@@ -67,7 +67,10 @@ export function LobbyPage() {
             maxLength={64}
             className="rounded-lg border border-emerald-700 bg-emerald-950 px-3 py-2 text-center outline-none focus:border-emerald-400"
           />
-          <button type="submit" className="rounded-lg bg-emerald-600 py-2 font-semibold hover:bg-emerald-500">
+          <button
+            type="submit"
+            className="rounded-lg bg-emerald-600 py-2 font-semibold hover:bg-emerald-500"
+          >
             {mode === 'register' ? '注册并进入' : '登录'}
           </button>
         </form>
@@ -94,7 +97,10 @@ export function LobbyPage() {
             maxLength={20}
             className="w-56 rounded-lg border border-emerald-800 bg-emerald-950 px-3 py-2 text-center outline-none focus:border-emerald-400"
           />
-          <button type="submit" className="rounded-lg border border-emerald-700 px-5 py-2 font-semibold hover:bg-emerald-900">
+          <button
+            type="submit"
+            className="rounded-lg border border-emerald-700 px-5 py-2 font-semibold hover:bg-emerald-900"
+          >
             游客进入
           </button>
         </form>
@@ -109,7 +115,9 @@ export function LobbyPage() {
           <h2 className="text-2xl font-bold">大厅</h2>
           <p className="text-sm text-emerald-300">
             欢迎，{identity.name}
-            {identity.chips !== undefined && <span className="text-amber-300">（筹码 {identity.chips}）</span>}
+            {identity.chips !== undefined && (
+              <span className="text-amber-300">（筹码 {identity.chips}）</span>
+            )}
           </p>
         </div>
         <button
@@ -135,7 +143,10 @@ export function LobbyPage() {
           maxLength={30}
           className="flex-1 rounded-lg border border-emerald-700 bg-emerald-950 px-3 py-2 outline-none focus:border-emerald-400"
         />
-        <button type="submit" className="rounded-lg bg-amber-600 px-5 py-2 font-semibold hover:bg-amber-500">
+        <button
+          type="submit"
+          className="rounded-lg bg-amber-600 px-5 py-2 font-semibold hover:bg-amber-500"
+        >
           创建房间
         </button>
         <button

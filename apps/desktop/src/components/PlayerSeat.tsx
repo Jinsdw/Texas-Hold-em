@@ -34,8 +34,16 @@ const STATUS_LABEL: Record<string, string> = {
   eliminated: '出局',
 };
 
-export function PlayerSeat({ seat, player, isActor, isMe, revealCards, revealRank, wonAmount }: PlayerSeatProps) {
-  const statusLabel = player ? STATUS_LABEL[player.status] ?? '' : '';
+export function PlayerSeat({
+  seat,
+  player,
+  isActor,
+  isMe,
+  revealCards,
+  revealRank,
+  wonAmount,
+}: PlayerSeatProps) {
+  const statusLabel = player ? (STATUS_LABEL[player.status] ?? '') : '';
 
   return (
     <div
@@ -67,7 +75,9 @@ export function PlayerSeat({ seat, player, isActor, isMe, revealCards, revealRan
         </div>
       )}
       {revealRank !== undefined && (
-        <div className="mt-1 text-xs font-semibold text-emerald-300">{HAND_RANK_LABEL[revealRank]}</div>
+        <div className="mt-1 text-xs font-semibold text-emerald-300">
+          {HAND_RANK_LABEL[revealRank]}
+        </div>
       )}
       {wonAmount !== undefined && wonAmount > 0 && (
         <div className="mt-0.5 text-xs font-bold text-amber-300">+{wonAmount}</div>
@@ -85,19 +95,15 @@ export function seatPosition(index: number, total: number): { left: string; top:
   };
 }
 
-export function ShowdownPanel({
-  result,
-  seats,
-}: {
-  result: ShowdownResult;
-  seats: RoomSeat[];
-}) {
+export function ShowdownPanel({ result, seats }: { result: ShowdownResult; seats: RoomSeat[] }) {
   const nameOf = (id: string) => seats.find((s) => s.playerId === id)?.name ?? id;
   if (result.foldWin) {
     const winner = result.pots[0]?.winners[0];
     return (
       <div className="rounded-lg bg-black/50 px-4 py-2 text-center text-sm text-emerald-200">
-        {winner ? `其余玩家弃牌，${nameOf(winner.playerId)} 赢得 ${winner.amount} 底池` : '手牌结束'}
+        {winner
+          ? `其余玩家弃牌，${nameOf(winner.playerId)} 赢得 ${winner.amount} 底池`
+          : '手牌结束'}
       </div>
     );
   }

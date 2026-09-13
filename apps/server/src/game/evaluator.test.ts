@@ -83,10 +83,7 @@ describe('evaluateFive 各牌型判定', () => {
 
 describe('evaluateBest 7 选 5', () => {
   it('从 7 张中找到皇家同花顺（弃掉干扰牌）', () => {
-    const ev = evaluateBest(
-      [c(14, S), c(13, S)],
-      [c(12, S), c(11, S), c(10, S), c(2, H), c(3, D)],
-    );
+    const ev = evaluateBest([c(14, S), c(13, S)], [c(12, S), c(11, S), c(10, S), c(2, H), c(3, D)]);
     expect(ev.rank).toBe(HandRank.RoyalFlush);
     expect(ev.bestFive).toHaveLength(5);
     expect(ev.bestFive.every((card) => card.suit === S)).toBe(true);

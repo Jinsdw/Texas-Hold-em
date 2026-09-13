@@ -23,7 +23,14 @@ describe('数据库层', () => {
     const db = openDatabase(tempDbPath());
     const now = Date.now();
     db.insert(users)
-      .values({ id: 'u1', username: 'alice', passwordHash: 'h', salt: 's', chips: 1000, createdAt: now })
+      .values({
+        id: 'u1',
+        username: 'alice',
+        passwordHash: 'h',
+        salt: 's',
+        chips: 1000,
+        createdAt: now,
+      })
       .run();
 
     const row = db.select().from(users).where(eq(users.id, 'u1')).get();
@@ -31,8 +38,16 @@ describe('数据库层', () => {
     expect(row?.chips).toBe(1000);
 
     expect(() =>
-      db.insert(users)
-        .values({ id: 'u2', username: 'alice', passwordHash: 'h', salt: 's', chips: 0, createdAt: now })
+      db
+        .insert(users)
+        .values({
+          id: 'u2',
+          username: 'alice',
+          passwordHash: 'h',
+          salt: 's',
+          chips: 0,
+          createdAt: now,
+        })
         .run(),
     ).toThrow();
   });
@@ -41,7 +56,14 @@ describe('数据库层', () => {
     const path = tempDbPath();
     const db = openDatabase(path);
     db.insert(users)
-      .values({ id: 'u1', username: 'bob', passwordHash: 'h', salt: 's', chips: 1000, createdAt: Date.now() })
+      .values({
+        id: 'u1',
+        username: 'bob',
+        passwordHash: 'h',
+        salt: 's',
+        chips: 1000,
+        createdAt: Date.now(),
+      })
       .run();
     db.update(users).set({ chips: 1250 }).where(eq(users.id, 'u1')).run();
 

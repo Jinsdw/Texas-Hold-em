@@ -5,6 +5,11 @@
 
 ## [Unreleased]
 
+### 2026-09-14（M5-4）—— M2-M5 全部完成
+
+- Changed: README 更新（M5 依赖清单、数据库启动说明、账号 API、已实现功能总览）
+- Verified: 最终全量验收——prettier 格式化、lint / typecheck（3 包）/ 78 测试 / 覆盖率 90.27% 全绿
+
 ### 2026-09-14（M5-3）
 
 - Added: RoomPersistenceHooks 钩子接口与 SqlitePersistence 实现——开局写 games、手牌结束写 hands（含结果 JSON）、账号玩家（u- 前缀）筹码实时回写 users、房间解散关闭对局

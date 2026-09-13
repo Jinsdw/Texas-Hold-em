@@ -87,7 +87,9 @@ const handA = await skipUntil(a, 'yourHand', stateA);
 await skipUntil(b, 'roomState', stateB);
 await skipUntil(b, 'gameState', stateB);
 const handB = await skipUntil(b, 'yourHand', stateB);
-log(`开局: phase=${gs.state.phase} pot=${gs.state.pot} A手牌=${handA.cards.length}张 B手牌=${handB.cards.length}张`);
+log(
+  `开局: phase=${gs.state.phase} pot=${gs.state.pot} A手牌=${handA.cards.length}张 B手牌=${handB.cards.length}张`,
+);
 
 // 行动循环：两人都 call/check 直到摊牌
 for (let i = 0; i < 60; i++) {
@@ -109,7 +111,9 @@ for (let i = 0; i < 60; i++) {
 }
 
 const final = stateA.last;
-log(`结束: phase=${final.phase} handNumber=${final.handNumber} foldWin=${final.showdownResult?.foldWin ?? false}`);
+log(
+  `结束: phase=${final.phase} handNumber=${final.handNumber} foldWin=${final.showdownResult?.foldWin ?? false}`,
+);
 if (final.phase !== 'showdown') throw new Error('未进入摊牌');
 
 // B 断线 → A 收到 connected=false 的 roomState
