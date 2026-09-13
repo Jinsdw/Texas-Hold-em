@@ -11,3 +11,6 @@ apps/desktop/src-tauri/gen/schemas/
 # 数据库文件
 *.db
 *.sqlite
+
+# ZCode 会话数据
+.zcode/

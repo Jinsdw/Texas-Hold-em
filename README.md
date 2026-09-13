@@ -12,7 +12,7 @@
 
 ## 当前进度
 
-M1 项目脚手架（进行中）——详见 [docs/PROGRESS.md](docs/PROGRESS.md)
+M1 项目脚手架 ✅ 已完成——详见 [docs/PROGRESS.md](docs/PROGRESS.md)
 
 ## 环境要求
 
@@ -107,7 +107,12 @@ pnpm --filter @holdem/desktop build   # 仅前端 → dist/
 pnpm tauri build                      # 完整安装包
 ```
 
-（服务端 / 桌面端启动步骤将在对应任务完成后补充。）
+## Git 工作流
+
+- 每完成一个**原子任务**（无论大小）立即 `git commit`，与进度文档同步同批完成
+- 提交信息遵循 Conventional Commits：`feat:` / `fix:` / `docs:` / `chore:` / `test:`，描述用中文
+- M1 阶段的提交按任务粒度回填（docs 初始化 → workspace → shared → desktop → server → 验收）
+- `.zcode/`、`node_modules/`、`dist/`、`src-tauri/target/`、`*.db` 均已忽略
 
 ## 进度文档
 

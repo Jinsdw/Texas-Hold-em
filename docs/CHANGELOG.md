@@ -5,6 +5,12 @@
 
 ## [Unreleased]
 
+### 2026-09-14（第 7 次更新）
+
+- Added: git 仓库初始化（main 分支），按 M1 任务粒度回填 6 个提交（docs/workspace/shared/desktop/server/验收）
+- Added: 「每个原子任务完成即 git commit」规范，记录于 README Git 工作流章节与 PROGRESS 文档同步规则
+- Changed: .gitignore 增加 .zcode/（ZCode 会话数据）
+
 ### 2026-09-14（第 6 次更新）—— M1 完成
 
 - Added: README.md 项目文档（环境要求 / 分包依赖清单 / 详细启动步骤），并纳入每次更新的同步范围
