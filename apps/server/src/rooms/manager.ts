@@ -35,6 +35,26 @@ export interface Room {
   players: Map<string, RoomPlayer>;
   table: TableState | null;
   handInPlay: boolean;
+  /** 当前对局记录 id（首手开启时由持久层生成） */
+  gameId: string | null;
+}
+
+/** 持久化钩子：RoomManager 在关键节点回调，具体落库由实现方负责 */
+export interface RoomPersistenceHooks {
+  /** 一场对局开始（table.handNumber === 1 时）；返回 game 记录 id */
+  onGameStarted(roomId: string, playerCount: number): string;
+  /** 一手牌结束（进入 showdown，含 foldWin） */
+  onHandFinished(
+    roomId: string,
+    gameId: string,
+    handNumber: number,
+    potTotal: number,
+    resultJson: string,
+  ): void;
+  /** 账号玩家筹码变化 */
+  onChipsChanged(playerId: string, chips: number): void;
+  /** 对局结束（房间解散） */
+  onGameEnded(roomId: string, gameId: string): void;
 }
 
 /**
@@ -49,6 +69,7 @@ export class RoomManager {
   constructor(
     private readonly initialStack: number = DEFAULT_INITIAL_STACK,
     private readonly genId: () => string = () => Math.random().toString(36).slice(2, 8),
+    private readonly hooks?: RoomPersistenceHooks,
   ) {}
 
   // ---------- 身份与连接 ----------
@@ -140,6 +161,7 @@ export class RoomManager {
       players: new Map(),
       table: null,
       handInPlay: false,
+      gameId: null,
     };
     room.players.set(playerId, this.makePlayer(identity, { isHost: true }));
     this.rooms.set(room.id, room);
@@ -176,6 +198,9 @@ export class RoomManager {
     identity.roomId = null;
 
     if (room.players.size === 0) {
+      if (room.gameId) {
+        this.hooks?.onGameEnded(room.id, room.gameId);
+      }
       this.rooms.delete(room.id);
       return;
     }
@@ -221,6 +246,9 @@ export class RoomManager {
     }
     room.table = startHand(table);
     room.handInPlay = true;
+    if (room.table.handNumber === 1) {
+      room.gameId = this.hooks?.onGameStarted(room.id, seated.length) ?? null;
+    }
     this.afterStateChanged(room);
     return { ok: true };
   }
@@ -244,6 +272,7 @@ export class RoomManager {
     room.table = result.state;
     if (result.state.phase === 'showdown') {
       room.handInPlay = false;
+      this.recordHand(room);
       this.syncStacks(room);
     }
     this.afterStateChanged(room);
@@ -286,12 +315,31 @@ export class RoomManager {
     player?.conn?.send({ type: 'error', code: 'ACTION_REJECTED', message });
   }
 
+  /** 手牌结束：写入记录（ potTotal = 各池金额之和，此时 state.pot 已清零） */
+  private recordHand(room: Room): void {
+    const result = room.table?.showdownResult;
+    if (!result || !room.gameId) return;
+    const potTotal = result.pots.reduce((sum, p) => sum + p.amount, 0);
+    this.hooks?.onHandFinished(
+      room.id,
+      room.gameId,
+      room.table!.handNumber,
+      potTotal,
+      JSON.stringify(result),
+    );
+  }
+
   private syncStacks(room: Room): void {
     const table = room.table;
     if (!table) return;
     for (const p of table.players) {
       const rp = room.players.get(p.id);
-      if (rp) rp.stack = p.stack;
+      if (rp) {
+        rp.stack = p.stack;
+        if (rp.playerId.startsWith('u-')) {
+          this.hooks?.onChipsChanged(rp.playerId, p.stack);
+        }
+      }
     }
   }
 

@@ -41,7 +41,7 @@
 
 - [x] Drizzle schema（users / games / hands）
 - [x] 简易账号（用户名 + 密码 hash）
-- [ ] 对局记录写入
+- [x] 对局记录写入
 
 ## M6 打磨与发布
 

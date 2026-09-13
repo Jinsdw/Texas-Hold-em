@@ -4,11 +4,13 @@ import { WebSocketServer } from 'ws';
 import { AuthService } from './auth/service';
 import { createApp } from './app';
 import { openDatabase } from './db';
+import { SqlitePersistence } from './persistence';
 import { RoomManager } from './rooms/manager';
 import { setupWebSocketHandlers } from './ws/handler';
 
 const db = openDatabase();
 const authService = new AuthService(db);
+const persistence = new SqlitePersistence(db, authService);
 const app = createApp(authService);
 const port = Number(process.env.PORT ?? 3000);
 
@@ -23,7 +25,7 @@ createGameServer(server as HttpServer);
 
 export function createGameServer(httpServer: HttpServer): { wss: WebSocketServer; manager: RoomManager } {
   const wss = new WebSocketServer({ noServer: true });
-  const manager = new RoomManager();
+  const manager = new RoomManager(undefined, undefined, persistence);
   setupWebSocketHandlers(httpServer, wss, manager, authService);
   return { wss, manager };
 }
