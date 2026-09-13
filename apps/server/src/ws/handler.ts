@@ -5,6 +5,7 @@ import type { Duplex } from 'node:stream';
 import type { Server as HttpServer } from 'node:http';
 import type { WebSocketServer } from 'ws';
 import type WebSocket from 'ws';
+import type { AuthService } from '../auth/service';
 import type { RoomManager } from '../rooms/manager';
 
 interface SocketContext {
@@ -16,7 +17,12 @@ interface SocketContext {
 /**
  * WebSocket 消息分发层：解析协议 → 调用 RoomManager → 由 manager 通过 Connection 回发。
  */
-export function setupWebSocketHandlers(server: HttpServer, wss: WebSocketServer, manager: RoomManager): void {
+export function setupWebSocketHandlers(
+  server: HttpServer,
+  wss: WebSocketServer,
+  manager: RoomManager,
+  authService?: AuthService,
+): void {
   const contexts = new WeakMap<WebSocket, SocketContext>();
 
   server.on('upgrade', (request: IncomingMessage, socket: Duplex, head: Buffer) => {
@@ -72,6 +78,31 @@ export function setupWebSocketHandlers(server: HttpServer, wss: WebSocketServer,
         const name = parsed.name.trim().slice(0, 20) || '玩家';
         const identity = manager.register(name, conn);
         ctx.playerId = identity.playerId;
+        return;
+      }
+      case 'authRegister':
+      case 'authLogin': {
+        if (!authService) {
+          send(ctx, { type: 'error', code: 'AUTH_UNAVAILABLE', message: '账号功能未启用' });
+          return;
+        }
+        const result =
+          parsed.type === 'authRegister'
+            ? authService.register(parsed.username, parsed.password)
+            : authService.login(parsed.username, parsed.password);
+        if ('error' in result) {
+          send(ctx, { type: 'error', code: 'AUTH_FAILED', message: result.error });
+          return;
+        }
+        manager.bindUser(result.userId, result.name, result.token, result.chips, conn);
+        ctx.playerId = result.userId;
+        conn.send({
+          type: 'authOk',
+          playerId: result.userId,
+          token: result.token,
+          name: result.name,
+          chips: result.chips,
+        });
         return;
       }
       case 'reconnect': {

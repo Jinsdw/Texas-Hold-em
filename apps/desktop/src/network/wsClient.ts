@@ -1,4 +1,4 @@
-import type { Card, ClientMessage, PlayerAction, ServerMessage } from '@holdem/shared';
+import type { ClientMessage, PlayerAction, ServerMessage } from '@holdem/shared';
 import { useConnectionStore } from '../stores/connectionStore';
 import { useGameStore } from '../stores/gameStore';
 
@@ -7,7 +7,7 @@ const STORAGE_KEY = 'holdem-identity';
 /**
  * 游戏服务器 WebSocket 客户端。
  * - 连接成功后自动用本地保存的身份重连（playerId + token）
- - 凭据失效时清空身份回大厅
+ * - 凭据失效时清空身份回大厅
  * - 断线后指数退避自动重连
  */
 class WsClient {
@@ -15,6 +15,7 @@ class WsClient {
   private attempts = 0;
   private manuallyClosed = false;
   private errorTimer: ReturnType<typeof setTimeout> | null = null;
+  private pendingName: string | null = null;
 
   connect(url = 'ws://localhost:3000/ws'): void {
     this.manuallyClosed = false;
@@ -68,6 +69,14 @@ class WsClient {
   register(name: string): void {
     this.pendingName = name;
     this.send({ type: 'register', name });
+  }
+
+  authRegister(username: string, password: string): void {
+    this.send({ type: 'authRegister', username, password });
+  }
+
+  authLogin(username: string, password: string): void {
+    this.send({ type: 'authLogin', username, password });
   }
 
   logout(): void {
@@ -131,6 +140,18 @@ class WsClient {
         this.pendingName = null;
         break;
       }
+      case 'authOk': {
+        const identity = {
+          playerId: message.playerId,
+          token: message.token,
+          name: message.name,
+          chips: message.chips,
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(identity));
+        conn.setIdentity(identity);
+        game.setError(null);
+        break;
+      }
       case 'roomState': {
         game.setRoom(message.room);
         break;
@@ -144,7 +165,7 @@ class WsClient {
         break;
       }
       case 'yourHand': {
-        game.setMyHand(message.cards as Card[]);
+        game.setMyHand(message.cards);
         break;
       }
       case 'error': {
@@ -162,8 +183,6 @@ class WsClient {
         break;
     }
   }
-
-  private pendingName: string | null = null;
 
   private scheduleReconnect(url: string): void {
     this.attempts += 1;

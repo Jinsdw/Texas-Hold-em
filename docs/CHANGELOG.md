@@ -5,6 +5,13 @@
 
 ## [Unreleased]
 
+### 2026-09-14（M5-2）
+
+- Added: 账号服务 AuthService——scrypt 加盐哈希、timingSafeEqual 校验、会话 token 签发（sessions 表）；4 个单元测试
+- Added: REST 路由 POST /api/register、/api/login
+- Added: WS 协议 authRegister/authLogin 消息与 authOk 回包；RoomManager.bindUser 绑定账号身份（playerId=users.id，初始筹码取用户余额）
+- Added: 前端大厅登录/注册表单（与游客模式并存）、identity 持久化含筹码
+
 ### 2026-09-14（M5-1）
 
 - Added: Drizzle + better-sqlite3 数据层——users/sessions/games/hands 四张表、openDatabase 工厂（WAL、幂等建表、数据目录自动创建、HOLDEM_DB_PATH 可覆盖）；3 个单元测试

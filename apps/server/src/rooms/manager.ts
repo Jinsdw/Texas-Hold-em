@@ -111,6 +111,11 @@ export class RoomManager {
     return this.identities.get(playerId);
   }
 
+  /** 账号登录后绑定持久身份（playerId 来自 users 表，初始筹码为用户当前筹码） */
+  bindUser(playerId: string, name: string, token: string, stack: number, conn: Connection): void {
+    this.identities.set(playerId, { playerId, token, name, roomId: null, conn });
+  }
+
   // ---------- 房间 ----------
 
   listRooms(): RoomSummary[] {

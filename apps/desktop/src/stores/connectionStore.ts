@@ -6,6 +6,8 @@ export interface PlayerIdentityInfo {
   playerId: string;
   token: string;
   name: string;
+  /** 账号用户才有（游客为 undefined） */
+  chips?: number;
 }
 
 const STORAGE_KEY = 'holdem-identity';

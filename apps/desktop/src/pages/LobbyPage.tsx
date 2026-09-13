@@ -3,12 +3,16 @@ import { useConnectionStore } from '../stores/connectionStore';
 import { useGameStore } from '../stores/gameStore';
 import { wsClient } from '../network/wsClient';
 
-/** 大厅：注册昵称 → 房间列表 / 创建 / 加入 */
+/** 大厅：游客昵称 或 账号注册/登录 → 房间列表 / 创建 / 加入 */
 export function LobbyPage() {
   const identity = useConnectionStore((s) => s.identity);
   const rooms = useGameStore((s) => s.rooms);
+  const lastError = useGameStore((s) => s.lastError);
   const [name, setName] = useState('');
   const [roomName, setRoomName] = useState('');
+  const [mode, setMode] = useState<'login' | 'register'>('login');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
   useEffect(() => {
     if (identity) wsClient.listRooms();
@@ -16,11 +20,68 @@ export function LobbyPage() {
 
   if (!identity) {
     return (
-      <div className="flex flex-col items-center gap-4">
+      <div className="flex w-full max-w-md flex-col items-center gap-5">
         <h2 className="text-2xl font-bold">进入牌局</h2>
-        <p className="text-sm text-emerald-300">给自己起个名字</p>
+
+        <div className="flex w-full rounded-xl border border-emerald-800 p-1">
+          <button
+            type="button"
+            onClick={() => setMode('login')}
+            className={`flex-1 rounded-lg py-1.5 text-sm font-semibold ${
+              mode === 'login' ? 'bg-emerald-700' : 'text-emerald-400'
+            }`}
+          >
+            账号登录
+          </button>
+          <button
+            type="button"
+            onClick={() => setMode('register')}
+            className={`flex-1 rounded-lg py-1.5 text-sm font-semibold ${
+              mode === 'register' ? 'bg-emerald-700' : 'text-emerald-400'
+            }`}
+          >
+            注册新账号
+          </button>
+        </div>
+
         <form
-          className="flex gap-2"
+          className="flex w-full flex-col gap-2"
+          onSubmit={(e) => {
+            e.preventDefault();
+            if (mode === 'register') wsClient.authRegister(username, password);
+            else wsClient.authLogin(username, password);
+          }}
+        >
+          <input
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            placeholder="用户名"
+            maxLength={20}
+            className="rounded-lg border border-emerald-700 bg-emerald-950 px-3 py-2 text-center outline-none focus:border-emerald-400"
+          />
+          <input
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="密码（至少 6 位）"
+            type="password"
+            maxLength={64}
+            className="rounded-lg border border-emerald-700 bg-emerald-950 px-3 py-2 text-center outline-none focus:border-emerald-400"
+          />
+          <button type="submit" className="rounded-lg bg-emerald-600 py-2 font-semibold hover:bg-emerald-500">
+            {mode === 'register' ? '注册并进入' : '登录'}
+          </button>
+        </form>
+
+        {lastError && <p className="text-sm text-red-400">{lastError}</p>}
+
+        <div className="flex w-full items-center gap-3 text-xs text-emerald-600">
+          <span className="h-px flex-1 bg-emerald-800" />
+          或以游客身份
+          <span className="h-px flex-1 bg-emerald-800" />
+        </div>
+
+        <form
+          className="flex w-full gap-2"
           onSubmit={(e) => {
             e.preventDefault();
             if (name.trim()) wsClient.register(name.trim());
@@ -31,10 +92,10 @@ export function LobbyPage() {
             onChange={(e) => setName(e.target.value)}
             placeholder="昵称"
             maxLength={20}
-            className="w-56 rounded-lg border border-emerald-700 bg-emerald-950 px-3 py-2 text-center outline-none focus:border-emerald-400"
+            className="w-56 rounded-lg border border-emerald-800 bg-emerald-950 px-3 py-2 text-center outline-none focus:border-emerald-400"
           />
-          <button type="submit" className="rounded-lg bg-emerald-600 px-5 py-2 font-semibold hover:bg-emerald-500">
-            进入
+          <button type="submit" className="rounded-lg border border-emerald-700 px-5 py-2 font-semibold hover:bg-emerald-900">
+            游客进入
           </button>
         </form>
       </div>
@@ -46,7 +107,10 @@ export function LobbyPage() {
       <div className="mb-6 flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold">大厅</h2>
-          <p className="text-sm text-emerald-300">欢迎，{identity.name}</p>
+          <p className="text-sm text-emerald-300">
+            欢迎，{identity.name}
+            {identity.chips !== undefined && <span className="text-amber-300">（筹码 {identity.chips}）</span>}
+          </p>
         </div>
         <button
           type="button"

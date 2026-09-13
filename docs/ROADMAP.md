@@ -40,7 +40,7 @@
 ## M5 持久化与账号
 
 - [x] Drizzle schema（users / games / hands）
-- [ ] 简易账号（用户名 + 密码 hash）
+- [x] 简易账号（用户名 + 密码 hash）
 - [ ] 对局记录写入
 
 ## M6 打磨与发布

@@ -35,6 +35,9 @@ export interface RoomSummary {
 export type ClientMessage =
   /** 首次连接：注册游客身份，服务端签发 playerId + token（重连凭据） */
   | { type: 'register'; name: string }
+  /** 账号注册并登录：绑定 users 行身份（筹码持久化） */
+  | { type: 'authRegister'; username: string; password: string }
+  | { type: 'authLogin'; username: string; password: string }
   /** 断线重连：携带既有 playerId + token 恢复会话 */
   | { type: 'reconnect'; playerId: PlayerId; token: string }
   | { type: 'listRooms' }
@@ -50,6 +53,7 @@ export type ClientMessage =
 /** 服务端 → 客户端 */
 export type ServerMessage =
   | { type: 'registered'; playerId: PlayerId; token: string }
+  | { type: 'authOk'; playerId: PlayerId; token: string; name: string; chips: number }
   | { type: 'roomList'; rooms: RoomSummary[] }
   | { type: 'roomState'; room: RoomState }
   | { type: 'gameState'; state: GameState }
@@ -61,6 +65,8 @@ export type ServerMessage =
 
 export const CLIENT_MESSAGE_TYPES = [
   'register',
+  'authRegister',
+  'authLogin',
   'reconnect',
   'listRooms',
   'createRoom',
