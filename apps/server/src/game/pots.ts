@@ -44,6 +44,17 @@ export function buildPots(players: readonly Player[]): Pot[] {
     const merged: Pot = { amount: target.amount + orphans, eligibleIds: target.eligibleIds };
     pots.splice(0, firstClaimable + 1, merged);
   }
+  // 尾部空池（弃牌者多投、无人可领）并入最后一个可领取池
+  const lastClaimable = pots.findLastIndex((p) => p.eligibleIds.length > 0);
+  if (lastClaimable !== -1 && lastClaimable < pots.length - 1) {
+    let orphans = 0;
+    for (let i = lastClaimable + 1; i < pots.length; i++) {
+      orphans += (pots[i] as Pot).amount;
+    }
+    const target = pots[lastClaimable] as Pot;
+    const merged: Pot = { amount: target.amount + orphans, eligibleIds: target.eligibleIds };
+    pots.splice(lastClaimable, pots.length - lastClaimable, merged);
+  }
 
   return pots;
 }

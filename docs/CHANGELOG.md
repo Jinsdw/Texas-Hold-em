@@ -5,6 +5,11 @@
 
 ## [Unreleased]
 
+### 2026-09-14（M2-5）
+
+- Added: 摊牌结算 resolveShowdown——按边池分层比较手牌、平分底池、余数按庄家后座位分配、摊牌公开信息（reveals）；接入引擎 run-out 与 river 收官流程；6 个单元测试
+- Fixed: buildPots 尾部空池未合并（弃牌者多投金额悬空），详见 ERRORS.md E-008
+
 ### 2026-09-14（M2-4）
 
 - Added: 下注轮次状态机——startHand（庄家轮转/发牌/盲注/单挑规则）、applyAction（fold/check/call/raise/all-in 裁决与最小加注校验）、加注重开行动义务、all-in 短注不重开、BB option、轮次自动推进、legalActionsFor 金额边界、toPublicState 公共快照；15 个单元测试

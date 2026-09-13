@@ -10,6 +10,7 @@ import type {
 import { DEFAULT_BLINDS } from '@holdem/shared';
 import { createDeck, shuffle } from './deck';
 import type { Rng } from './rng';
+import { resolveShowdown } from './showdown';
 
 /** 下注阶段（可行动） */
 const BETTING_PHASES: readonly GamePhase[] = ['pre-flop', 'flop', 'turn', 'river'];
@@ -147,13 +148,14 @@ function advancePhase(state: TableState): void {
   }
 }
 
-/** 剩余玩家全部 all-in：直接发完公共牌进入摊牌 */
+/** 剩余玩家全部 all-in：直接发完公共牌进入摊牌并结算 */
 function runOutBoard(state: TableState): void {
   while (state.communityCards.length < 5) {
     dealCommunity(state, 1);
   }
   state.phase = 'showdown';
   state.actorId = null;
+  state.showdownResult = resolveShowdown(state);
 }
 
 /** 只剩一名未弃牌玩家：立即结束本手，赢走全部底池（不摊牌） */
