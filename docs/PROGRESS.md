@@ -1,23 +1,19 @@
 # 项目进度
 
-**最后更新**：2026-09-14 03:26
-**当前阶段**：M1 项目脚手架 ✅ 已完成（等待确认进入 M2）
-**整体完成度**：约 18%
+**最后更新**：2026-09-14 03:27
+**当前阶段**：M2 核心游戏引擎（进行中）
+**整体完成度**：约 22%
 
 > 文档同步范围（硬性要求）：每次代码更新后按顺序执行 **CHANGELOG → PROGRESS → ROADMAP → README（依赖清单 + 启动步骤）→ git commit（Conventional Commits，一个原子任务一次提交）**。
 > **报错规则（硬性要求）**：遇到任何报错（编译/类型/测试/运行时/依赖/环境）必须记录到 [ERRORS.md](ERRORS.md)：错误现象、根因、修复方式、验证结果；随当次提交一并入库。
 
 ## 当前正在进行的任务
 
-（无——M1 已全部完成并通过验收，等待用户确认后进入 M2）
-
-## M1 验收结果
-
-- `pnpm lint` ✅　`pnpm typecheck`（shared / desktop / server 三包）✅　`pnpm test`（5 例）✅
-- 服务端实测：`GET /health` 返回 200；`ws://localhost:3000/ws` 握手成功并收到 welcome 消息；停止后端口正常释放
-- 桌面端实测：`tsc --noEmit`、`vite build`、Vite dev server（localhost:5173）均通过；`tauri icon` 全套图标已生成
+- [ ] M2-2 手牌评估器（7 选 5，含皇家同花顺/平局边界）
 
 ## 已完成任务（最近 10 条）
+
+- [x] 2026-09-14 M2-1 牌组生成 + Fisher-Yates 洗牌（6 测试通过，可注入种子 RNG）
 
 - [x] 2026-09-14 新增 docs/ERRORS.md 错误日志（回填 M1 的 4 条错误：pnpm 11 allowBuilds、plugin-react peer、hono serve 类型、Rust 缺失）并纳入硬性同步规则
 - [x] 2026-09-14 git 仓库初始化，按 M1 任务粒度回填 6 个提交，新增「每任务一提交」规范并忽略 .zcode/

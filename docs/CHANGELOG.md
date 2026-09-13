@@ -5,6 +5,11 @@
 
 ## [Unreleased]
 
+### 2026-09-14（M2-1）
+
+- Added: 游戏引擎牌组模块——createDeck 52 张有序牌 + Fisher-Yates 洗牌（纯函数，支持注入种子 RNG）；单元测试 6 例
+- Added: scripts/sync-docs.mjs 文档同步工具（CHANGELOG/ROADMAP/PROGRESS 一键更新）
+
 ### 2026-09-14（第 8 次更新）
 
 - Added: `docs/ERRORS.md` 错误日志——记录错误现象、根因、修复方式、验证结果；回填 M1 的 4 条记录（pnpm 11 allowBuilds 迁移、plugin-react peer 升级、hono serve 类型收窄、Rust 工具链缺失待办）
