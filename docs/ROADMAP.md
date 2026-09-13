@@ -30,11 +30,11 @@
 
 ## M4 桌面端 UI
 
-- [ ] 牌桌布局（椭圆形座位环绕）
-- [ ] 自己手牌 + 公共牌展示
-- [ ] 操作面板（Fold / Check / Call / Raise 滑块）
-- [ ] 筹码、底池、当前行动玩家高亮
-- [ ] Zustand store 与 WebSocket 事件绑定
+- [x] 牌桌布局（椭圆形座位环绕）
+- [x] 自己手牌 + 公共牌展示
+- [x] 操作面板（Fold / Check / Call / Raise 滑块）
+- [x] 筹码、底池、当前行动玩家高亮
+- [x] Zustand store 与 WebSocket 事件绑定
 - [ ] 动画与音效
 
 ## M5 持久化与账号

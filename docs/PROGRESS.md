@@ -1,17 +1,19 @@
 # 项目进度
 
-**最后更新**：2026-09-14 04:10
-**当前阶段**：M4 桌面端 UI（进行中）
-**整体完成度**：约 60%
+**最后更新**：2026-09-14 04:18
+**当前阶段**：M4 桌面端 UI ✅ 已完成
+**整体完成度**：约 75%
 
 > 文档同步范围（硬性要求）：每次代码更新后按顺序执行 **CHANGELOG → PROGRESS → ROADMAP → README（依赖清单 + 启动步骤）→ git commit（Conventional Commits，一个原子任务一次提交）**。
 > **报错规则（硬性要求）**：遇到任何报错（编译/类型/测试/运行时/依赖/环境）必须记录到 [ERRORS.md](ERRORS.md)：错误现象、根因、修复方式、验证结果；随当次提交一并入库。
 
 ## 当前正在进行的任务
 
-- [ ] M4-2 牌桌 UI 组件（PlayingCard / PlayerSeat / TableLayout / ActionBar / ShowdownPanel）
+- [ ] M5-1 Drizzle + SQLite schema（users/games/hands）
 
 ## 已完成任务（最近 10 条）
+
+- [x] 2026-09-14 M4-2/M4-3 牌桌 UI 与页面（浏览器实测通过）
 
 - [x] 2026-09-14 M4-1 WS 客户端封装与状态 store
 

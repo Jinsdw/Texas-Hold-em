@@ -5,6 +5,13 @@
 
 ## [Unreleased]
 
+### 2026-09-14（M4-2 / M4-3）—— M4 完成
+
+- Added: 牌桌 UI 组件——PlayingCard（花色点数/牌背）、PlayerSeat（筹码/状态/行动高亮/摊牌信息）、TableLayout（椭圆桌+座位环绕+公共牌+底池+庄家钮）、ActionBar（弃牌/过牌/跟注/加注滑块/全下）、ShowdownPanel（赢家与牌型中文展示）
+- Added: 页面与路由——LobbyPage（注册/房间列表/创建/加入/观战）、TablePage（等待区就绪与开局 + 游戏区）、App 自动连接与状态徽标
+- Verified: 浏览器实测通过——注册→大厅→建房→第二玩家加入→开局（盲注 30 正确）→手牌/操作面板渲染→跟注流转（底池 40、行动权转移）→断线座位显示
+- Fixed: 组件清理（未用导入/重复定义）
+
 ### 2026-09-14（M4-1）
 
 - Added: 桌面端网络层——WsClient 单例（自动重连指数退避、localStorage 身份持久化、RECONNECT_FAILED 自动清身份）
