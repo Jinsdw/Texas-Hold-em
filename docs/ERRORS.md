@@ -15,6 +15,7 @@
 | E-007 | 2026-09-14 | 逻辑缺陷 | 庄家轮转取到自己不移动；唯一可行动者已匹配时应直接 run-out | ✅   |
 | E-008 | 2026-09-14 | 逻辑缺陷 | 边池空档防御只处理头部，尾部无人可领的池未合并（弃牌者多投分） | ✅   |
 | E-009 | 2026-09-14 | 依赖冲突 | @vitest/coverage-v8 5.x 需 vitest 5；findLastIndex 需 ES2023 lib | ✅   |
+| E-010 | 2026-09-14 | 脚本缺陷 | 冒烟脚本 drainUntil 假设 waiter 消息会回写 inbox，实际直接 resolve 导致超时 | ✅   |
 
 ---
 
@@ -44,6 +45,16 @@
 - **根因**：`serve()` 的返回类型是含 Http2 变体的宽联合 `ServerType`；未传 `createServer` override 时实际创建的是标准 `node:http` Server，但类型系统无法自动收窄
 - **修复方式**：在调用处显式收窄：`createWebSocketServer(server as HttpServer)`，并加注释说明该联合类型的实际行为；`createWebSocketServer` 参数类型保持严格的 `HttpServer`
 - **验证**：`pnpm --filter @holdem/server typecheck` 通过；服务端实际启动 + `/health` + WebSocket 握手实测正常
+
+## E-010 冒烟脚本消息等待竞态
+
+- **日期**：2026-09-14
+- **位置**：`apps/server/scripts/smoke-game.mjs`
+- **报错信息**：`Error: [A] 等待消息超时`——日志显示 roomState 已到达 A，但脚本仍超时
+- **根因**：脚本的消息 handler 在有 waiter 时直接 `resolve(msg)` **不回写 inbox**，而 `drainUntil` 在返回后又试图从 `inbox.filter(...)` 找同一条消息；且 find/find 逻辑与 waiter 机制混用造成对消费路径的假设不一致。用 CJS 最小复刻验证服务端双客户端流程完全正常，问题纯在脚本
+- **修复方式**：重写为纯顺序消费——`skipUntil(sock, type)` 沿途丢弃无关消息（记录最新 gameState）直到拿到目标类型；明确服务端广播顺序 roomState → gameState → yourHand
+- **验证**：冒烟全流程通过：注册/建房/加入/就绪/开局（pot=30）/call-check 循环至真实摊牌（foldWin=false）/断线通知/重连恢复
+- **教训**：消息等待器的 resolve 与 inbox 缓存必须二选一保持一致；先写最小复刻定位问题层（服务端 vs 脚本），避免在错误层调试
 
 ## E-009 覆盖率工具版本不匹配与 ES2023 API
 

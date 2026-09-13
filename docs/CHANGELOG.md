@@ -5,6 +5,13 @@
 
 ## [Unreleased]
 
+### 2026-09-14（M3-3 / M3-4）—— M3 完成
+
+- Added: WebSocket 消息分发层 ws/handler.ts——JSON 协议解析、类型守卫、register/reconnect/ping 免登录、其余消息要求已注册、close 断线通知
+- Added: 双客户端集成冒烟 smoke:game——注册/建房/加入/就绪/开局/call-check 至摊牌/断线通知/重连恢复全流程实测通过
+- Changed: index.ts 重构为 createGameServer 工厂（挂载 RoomManager + WS 分发）
+- Fixed: 冒烟脚本消息等待竞态（ERRORS E-010）
+
 ### 2026-09-14（M3-2）
 
 - Added: RoomManager 房间管理器——注册/重连凭据校验、房间创建/加入/离开/房主转移、就绪与开局校验、行动裁决分发、断线标记、stack 同步；注入式 Connection 抽象与 id 生成器；11 个单元测试

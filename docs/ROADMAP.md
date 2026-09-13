@@ -23,10 +23,10 @@
 ## M3 房间与联机
 
 - [x] 房间模型与创建/加入/离开
-- [ ] WebSocket 消息协议（packages/shared/protocol）
-- [ ] 服务器广播机制
-- [ ] 断线重连（playerId + token）
-- [ ] 观战模式
+- [x] WebSocket 消息协议（packages/shared/protocol）（协议/广播/重连已在 handler 与 RoomManager 实现，观战模式支持加入为观众）
+- [x] 服务器广播机制（协议/广播/重连已在 handler 与 RoomManager 实现，观战模式支持加入为观众）
+- [x] 断线重连（playerId + token）（协议/广播/重连已在 handler 与 RoomManager 实现，观战模式支持加入为观众）
+- [x] 观战模式（协议/广播/重连已在 handler 与 RoomManager 实现，观战模式支持加入为观众）
 
 ## M4 桌面端 UI
 
