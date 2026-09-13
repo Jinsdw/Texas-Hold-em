@@ -5,6 +5,12 @@
 
 ## [Unreleased]
 
+### 2026-09-14（M2-6）—— M2 完成
+
+- Added: 覆盖率工具 @vitest/coverage-v8（^3.2.7 与 vitest 对齐）+ pnpm test:coverage 脚本；引擎行覆盖 88.75%（目标 80%）
+- Changed: tsconfig base 升级 ES2023（支持 findLastIndex）
+- Verified: M2 验收全绿——lint / typecheck / 57 测试 / 覆盖率
+
 ### 2026-09-14（M2-5）
 
 - Added: 摊牌结算 resolveShowdown——按边池分层比较手牌、平分底池、余数按庄家后座位分配、摊牌公开信息（reveals）；接入引擎 run-out 与 river 收官流程；6 个单元测试

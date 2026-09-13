@@ -14,6 +14,7 @@
 | E-006 | 2026-09-14 | 逻辑缺陷 | 边池分层公式产生负贡献，经典三级 all-in 第三池被抵消为 0 | ✅   |
 | E-007 | 2026-09-14 | 逻辑缺陷 | 庄家轮转取到自己不移动；唯一可行动者已匹配时应直接 run-out | ✅   |
 | E-008 | 2026-09-14 | 逻辑缺陷 | 边池空档防御只处理头部，尾部无人可领的池未合并（弃牌者多投分） | ✅   |
+| E-009 | 2026-09-14 | 依赖冲突 | @vitest/coverage-v8 5.x 需 vitest 5；findLastIndex 需 ES2023 lib | ✅   |
 
 ---
 
@@ -43,6 +44,16 @@
 - **根因**：`serve()` 的返回类型是含 Http2 变体的宽联合 `ServerType`；未传 `createServer` override 时实际创建的是标准 `node:http` Server，但类型系统无法自动收窄
 - **修复方式**：在调用处显式收窄：`createWebSocketServer(server as HttpServer)`，并加注释说明该联合类型的实际行为；`createWebSocketServer` 参数类型保持严格的 `HttpServer`
 - **验证**：`pnpm --filter @holdem/server typecheck` 通过；服务端实际启动 + `/health` + WebSocket 握手实测正常
+
+## E-009 覆盖率工具版本不匹配与 ES2023 API
+
+- **日期**：2026-09-14
+- **位置**：根 package.json（devDependencies）、tsconfig.base.json
+- **报错信息**：① `pnpm peers check` 报 @vitest/coverage-v8@5.0.0 要求 vitest 5.0.0（实际 3.2.7），运行时报 loadProvider 初始化失败；② `TS2550: Property 'findLastIndex' does not exist... Try changing the 'lib' compiler option to 'es2023'`
+- **根因**：① pnpm add 未锁大版本，装到了适配 vitest 5 的 coverage-v8 5.x；② pots.ts 使用了 ES2023 的 `Array.findLastIndex`，而 tsconfig lib 为 ES2022
+- **修复方式**：① 安装 `@vitest/coverage-v8@^3.2.7` 与 vitest 大版本对齐；② tsconfig.base 的 target/lib 升级为 ES2023（Vite 构建目标与 Node 22 均支持）
+- **验证**：peers check 通过；lint/typecheck/57 测试/覆盖率报告全绿
+- **教训**：vitest 生态插件（coverage/ui/ui-vue 等）版本必须与 vitest 本体大版本一致；使用新数组 API 前确认 tsconfig lib 等级
 
 ## E-008 边池尾部空档未合并
 
