@@ -105,7 +105,8 @@ describe('evaluateBest 7 选 5', () => {
 
   it('6 张场景（4 张公共牌）也能评估', () => {
     const ev = evaluateBest([c(14, H), c(13, H)], [c(12, H), c(11, H), c(10, H), c(2, S)]);
-    expect(ev.rank).toBe(HandRank.StraightFlush);
+    expect(ev.rank).toBe(HandRank.RoyalFlush);
+    expect(ev.tiebreakers).toEqual([14]);
   });
 
   it('张数不合法时抛错', () => {

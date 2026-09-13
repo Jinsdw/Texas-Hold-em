@@ -5,6 +5,10 @@
 
 ## [Unreleased]
 
+### 2026-09-14（M2-2 补丁）
+
+- Fixed: 评估器 6 张场景测试期望再次修正（10-A 同花即皇家同花顺，期望 RoyalFlush），测试全绿后补交
+
 ### 2026-09-14（M2-2）
 
 - Added: 手牌评估器——evaluateFive 5 张判定全部 10 种牌型、evaluateBest 7 选 5、compareEvaluations 决胜比较；20 个单元测试

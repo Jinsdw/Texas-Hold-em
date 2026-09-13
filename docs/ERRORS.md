@@ -47,8 +47,9 @@
 - **位置**：`apps/server/src/game/evaluator.test.ts`
 - **报错信息**：`expected 8 to be 9`（StraightFlush vs 期望 RoyalFlush）；`expected +0 to be 8`（HighCard vs 期望 StraightFlush）
 - **根因**：两个测试用例的扑克学期望写错——① 公共牌 9♣10♣J♣Q♣K♣ 是 **K 高同花顺**（straight high=13），不是皇家同花顺（皇家必须 10-A）；② 6 张场景 A♥K♥+Q♥J♥ 只有 **4 张同花色**，5 张组合里凑不成同花，评估器正确返回高牌 A。评估器实现本身正确
-- **修复方式**：① 期望改为 `StraightFlush + [13]`；② 公共牌改为 4 张同花（补 10♥），断言 StraightFlush
+- **修复方式**：① 期望改为 `StraightFlush + [13]`；② 公共牌改为 4 张同花（补 10♥）。首次修复时又把 10♥ 的期望写成 StraightFlush——**A♥K♥Q♥J♥10♥ 恰是皇家同花顺**（第二次期望错误，actual=9 才正确），最终期望改为 `RoyalFlush + [14]`
 - **验证**：32 个测试全部通过
+- **教训**：扑克手牌期望值应先人工核对牌面（10-A 同花=皇家；不足 5 张同花色=不成同花），并且必须在测试全绿后再执行 commit
 
 ## E-004 本机缺少 Rust 工具链（待处理）
 
