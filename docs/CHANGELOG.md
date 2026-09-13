@@ -5,6 +5,11 @@
 
 ## [Unreleased]
 
+### 2026-09-14（M2-2）
+
+- Added: 手牌评估器——evaluateFive 5 张判定全部 10 种牌型、evaluateBest 7 选 5、compareEvaluations 决胜比较；20 个单元测试
+- Fixed: 修正评估器测试中两处扑克学期望错误（K 高同花顺≠皇家；同花色不足 5 张不成同花），详见 ERRORS.md E-005
+
 ### 2026-09-14（M2-1）
 
 - Added: 游戏引擎牌组模块——createDeck 52 张有序牌 + Fisher-Yates 洗牌（纯函数，支持注入种子 RNG）；单元测试 6 例

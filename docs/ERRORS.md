@@ -10,6 +10,7 @@
 | E-002 | 2026-09-14 | 依赖冲突 | @vitejs/plugin-react 4.3.0 与 vite 6 的 peer 依赖不匹配 | ✅   |
 | E-003 | 2026-09-14 | 类型错误 | @hono/node-server serve() 宽联合类型导致 tsc 失败       | ✅   |
 | E-004 | 2026-09-14 | 环境缺失 | 本机无 Rust 工具链，Tauri 原生窗口无法编译验证          | ⏳   |
+| E-005 | 2026-09-14 | 测试失败 | 评估器测试期望值写错（K 高同花顺误当皇家、同花牌不足误判） | ✅   |
 
 ---
 
@@ -39,6 +40,15 @@
 - **根因**：`serve()` 的返回类型是含 Http2 变体的宽联合 `ServerType`；未传 `createServer` override 时实际创建的是标准 `node:http` Server，但类型系统无法自动收窄
 - **修复方式**：在调用处显式收窄：`createWebSocketServer(server as HttpServer)`，并加注释说明该联合类型的实际行为；`createWebSocketServer` 参数类型保持严格的 `HttpServer`
 - **验证**：`pnpm --filter @holdem/server typecheck` 通过；服务端实际启动 + `/health` + WebSocket 握手实测正常
+
+## E-005 评估器测试期望值写错（测试错误，非实现错误）
+
+- **日期**：2026-09-14
+- **位置**：`apps/server/src/game/evaluator.test.ts`
+- **报错信息**：`expected 8 to be 9`（StraightFlush vs 期望 RoyalFlush）；`expected +0 to be 8`（HighCard vs 期望 StraightFlush）
+- **根因**：两个测试用例的扑克学期望写错——① 公共牌 9♣10♣J♣Q♣K♣ 是 **K 高同花顺**（straight high=13），不是皇家同花顺（皇家必须 10-A）；② 6 张场景 A♥K♥+Q♥J♥ 只有 **4 张同花色**，5 张组合里凑不成同花，评估器正确返回高牌 A。评估器实现本身正确
+- **修复方式**：① 期望改为 `StraightFlush + [13]`；② 公共牌改为 4 张同花（补 10♥），断言 StraightFlush
+- **验证**：32 个测试全部通过
 
 ## E-004 本机缺少 Rust 工具链（待处理）
 
