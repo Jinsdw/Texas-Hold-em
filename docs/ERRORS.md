@@ -11,6 +11,7 @@
 | E-003 | 2026-09-14 | 类型错误 | @hono/node-server serve() 宽联合类型导致 tsc 失败       | ✅   |
 | E-004 | 2026-09-14 | 环境缺失 | 本机无 Rust 工具链，Tauri 原生窗口无法编译验证          | ⏳   |
 | E-005 | 2026-09-14 | 测试失败 | 评估器测试期望值写错（K 高同花顺误当皇家、同花牌不足误判） | ✅   |
+| E-006 | 2026-09-14 | 逻辑缺陷 | 边池分层公式产生负贡献，经典三级 all-in 第三池被抵消为 0 | ✅   |
 
 ---
 
@@ -40,6 +41,16 @@
 - **根因**：`serve()` 的返回类型是含 Http2 变体的宽联合 `ServerType`；未传 `createServer` override 时实际创建的是标准 `node:http` Server，但类型系统无法自动收窄
 - **修复方式**：在调用处显式收窄：`createWebSocketServer(server as HttpServer)`，并加注释说明该联合类型的实际行为；`createWebSocketServer` 参数类型保持严格的 `HttpServer`
 - **验证**：`pnpm --filter @holdem/server typecheck` 通过；服务端实际启动 + `/health` + WebSocket 握手实测正常
+
+## E-006 边池分层公式产生负贡献
+
+- **日期**：2026-09-14
+- **位置**：`apps/server/src/game/pots.ts`（buildPots）
+- **报错信息**：测试 `经典三级 all-in：A500 B300 C100` 失败——第三池 `expected 200, received 0`
+- **根因**：分层公式 `amount += Math.min(contrib, level) - prev` 没有下限截断：玩家 C 只投入 100，在计算 [300,500] 层时 `min(100,500) - 300 = -200`，负贡献恰好抵消了 A 该层的 200，边池凭空消失
+- **修复方式**：改为 `Math.max(0, Math.min(contrib, level) - prev)`——每个玩家对一层的贡献是投入被钳制到 `[prev, level]` 区间后的增量，不足 prev 记 0
+- **验证**：修复后 5 个边池测试 + 全部 37 个测试通过；同时修正了"弃牌者"用例中 b（投入 100、未弃牌）应享有主池资格的期望错误
+- **教训**：分层/区间类公式要显式 clamp 到 `[prev, level]`；测试期望要先按规则人工核算每个玩家的资格与金额
 
 ## E-005 评估器测试期望值写错（测试错误，非实现错误）
 
