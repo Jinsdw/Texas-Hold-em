@@ -5,6 +5,11 @@
 
 ## [Unreleased]
 
+### 2026-09-14（第 8 次更新）
+
+- Added: `docs/ERRORS.md` 错误日志——记录错误现象、根因、修复方式、验证结果；回填 M1 的 4 条记录（pnpm 11 allowBuilds 迁移、plugin-react peer 升级、hono serve 类型收窄、Rust 工具链缺失待办）
+- Changed: 「遇错必记 ERRORS.md」纳入 PROGRESS 硬性同步规则与 README
+
 ### 2026-09-14（第 7 次更新）
 
 - Added: git 仓库初始化（main 分支），按 M1 任务粒度回填 6 个提交（docs/workspace/shared/desktop/server/验收）

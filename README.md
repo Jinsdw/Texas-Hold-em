@@ -114,8 +114,13 @@ pnpm tauri build                      # 完整安装包
 - M1 阶段的提交按任务粒度回填（docs 初始化 → workspace → shared → desktop → server → 验收）
 - `.zcode/`、`node_modules/`、`dist/`、`src-tauri/target/`、`*.db` 均已忽略
 
+## 错误日志
+
+开发中遇到的每个报错（编译 / 类型 / 测试 / 运行时 / 依赖 / 环境）都记录在 [docs/ERRORS.md](docs/ERRORS.md)，包含错误现象、根因、修复方式与验证结果。
+
 ## 进度文档
 
 - [docs/ROADMAP.md](docs/ROADMAP.md) — 里程碑规划
 - [docs/PROGRESS.md](docs/PROGRESS.md) — 任务进度主文件
 - [docs/CHANGELOG.md](docs/CHANGELOG.md) — 变更日志
+- [docs/ERRORS.md](docs/ERRORS.md) — 错误日志（报错现象 / 根因 / 修复方式 / 验证结果）
