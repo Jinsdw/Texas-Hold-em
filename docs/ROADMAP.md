@@ -22,7 +22,7 @@
 
 ## M3 房间与联机
 
-- [ ] 房间模型与创建/加入/离开
+- [x] 房间模型与创建/加入/离开
 - [ ] WebSocket 消息协议（packages/shared/protocol）
 - [ ] 服务器广播机制
 - [ ] 断线重连（playerId + token）

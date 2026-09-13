@@ -5,6 +5,11 @@
 
 ## [Unreleased]
 
+### 2026-09-14（M3-2）
+
+- Added: RoomManager 房间管理器——注册/重连凭据校验、房间创建/加入/离开/房主转移、就绪与开局校验、行动裁决分发、断线标记、stack 同步；注入式 Connection 抽象与 id 生成器；11 个单元测试
+- Fixed: startGame 未延续上一手 handNumber 与 dealerSeat 导致庄家不轮转
+
 ### 2026-09-14（M3-1）
 
 - Added: 共享消息协议 packages/shared/protocol——ClientMessage（register/reconnect/listRooms/createRoom/joinRoom/leaveRoom/setReady/startGame/playerAction/ping）、ServerMessage（registered/roomList/roomState/gameState/yourHand/error/pong）、RoomState/RoomSummary 公开结构、isClientMessage 类型守卫
