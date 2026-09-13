@@ -5,6 +5,12 @@
 
 ## [Unreleased]
 
+### 2026-09-14（M4-1）
+
+- Added: 桌面端网络层——WsClient 单例（自动重连指数退避、localStorage 身份持久化、RECONNECT_FAILED 自动清身份）
+- Added: gameStore（room/rooms/gameState/myHand/error）与 connectionStore 扩展（identity 持久化）
+- Added: shared 模块 deriveLegalActions（客户端操作面板与服务端共用行动推导）
+
 ### 2026-09-14（M3-3 / M3-4）—— M3 完成
 
 - Added: WebSocket 消息分发层 ws/handler.ts——JSON 协议解析、类型守卫、register/reconnect/ping 免登录、其余消息要求已注册、close 断线通知
