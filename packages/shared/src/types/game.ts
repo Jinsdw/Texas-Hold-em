@@ -1,4 +1,5 @@
 import type { Card } from './card';
+import type { HandEvaluation } from './hand';
 import type { Player, PlayerId } from './player';
 import type { PlayerAction } from './action';
 
@@ -13,30 +14,56 @@ export type GamePhase =
 
 /** 盲注结构 */
 export interface BlindStructure {
-  readonly smallBlind: number;
-  readonly bigBlind: number;
-  readonly ante: number;
+  smallBlind: number;
+  bigBlind: number;
+  ante: number;
 }
 
-/** 服务端权威的完整游戏状态（客户端视角的裁剪版在 M3 协议中定义） */
+/** 单个池（主池/边池）的摊牌结算 */
+export interface ShowdownPotResult {
+  amount: number;
+  eligibleIds: PlayerId[];
+  winners: { playerId: PlayerId; amount: number }[];
+}
+
+/** 摊牌时公开的单个玩家手牌信息 */
+export interface ShowdownReveal {
+  playerId: PlayerId;
+  cards: Card[];
+  evaluation: HandEvaluation;
+}
+
+export interface ShowdownResult {
+  pots: ShowdownPotResult[];
+  reveals: ShowdownReveal[];
+  /** true 表示其余玩家全部弃牌，未进入摊牌比较 */
+  foldWin: boolean;
+}
+
+/**
+ * 服务端权威的游戏状态快照（不含任何私有信息：底牌与牌堆在服务端内部）。
+ * 客户端收到的是本结构的浅拷贝；引擎在服务端克隆体上原位更新。
+ */
 export interface GameState {
   /** 第几手牌（从 1 开始） */
-  readonly handNumber: number;
-  readonly phase: GamePhase;
-  readonly players: readonly Player[];
+  handNumber: number;
+  phase: GamePhase;
+  players: Player[];
   /** 公共牌（未发出的阶段为空数组） */
-  readonly communityCards: readonly Card[];
-  /** 主池 + 边池总额 */
-  readonly pot: number;
+  communityCards: Card[];
+  /** 本手牌所有玩家累计投入（= 主池 + 边池总额） */
+  pot: number;
   /** 当前下注轮的最高投注 */
-  readonly currentBet: number;
+  currentBet: number;
   /** 最小加注增量 */
-  readonly minimumRaise: number;
+  minimumRaise: number;
   /** 当前应行动的玩家；null 表示无人在等待行动 */
-  readonly actorId: PlayerId | null;
+  actorId: PlayerId | null;
   /** 庄家按钮所在座位 */
-  readonly dealerSeat: number;
-  readonly blinds: BlindStructure;
+  dealerSeat: number;
+  blinds: BlindStructure;
   /** 本手牌的动作日志（按时间序） */
-  readonly actionLog: readonly PlayerAction[];
+  actionLog: PlayerAction[];
+  /** 摊牌结果（仅 phase = showdown 时非空） */
+  showdownResult: ShowdownResult | null;
 }

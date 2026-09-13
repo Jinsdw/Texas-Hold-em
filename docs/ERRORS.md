@@ -12,6 +12,7 @@
 | E-004 | 2026-09-14 | 环境缺失 | 本机无 Rust 工具链，Tauri 原生窗口无法编译验证          | ⏳   |
 | E-005 | 2026-09-14 | 测试失败 | 评估器测试期望值写错（K 高同花顺误当皇家、同花牌不足误判） | ✅   |
 | E-006 | 2026-09-14 | 逻辑缺陷 | 边池分层公式产生负贡献，经典三级 all-in 第三池被抵消为 0 | ✅   |
+| E-007 | 2026-09-14 | 逻辑缺陷 | 庄家轮转取到自己不移动；唯一可行动者已匹配时应直接 run-out | ✅   |
 
 ---
 
@@ -41,6 +42,16 @@
 - **根因**：`serve()` 的返回类型是含 Http2 变体的宽联合 `ServerType`；未传 `createServer` override 时实际创建的是标准 `node:http` Server，但类型系统无法自动收窄
 - **修复方式**：在调用处显式收窄：`createWebSocketServer(server as HttpServer)`，并加注释说明该联合类型的实际行为；`createWebSocketServer` 参数类型保持严格的 `HttpServer`
 - **验证**：`pnpm --filter @holdem/server typecheck` 通过；服务端实际启动 + `/health` + WebSocket 握手实测正常
+
+## E-007 状态机：庄家轮转失效与 run-out 特判缺失
+
+- **日期**：2026-09-14
+- **位置**：`apps/server/src/game/engine.ts`（startHand / settleAfterAction）及 engine.test.ts 多处期望
+- **报错信息**：9 个状态机测试失败（`expected 0 to be 1`、`expected 'pre-flop' to be 'showdown'` 等）
+- **根因**：① `seatingOrderFrom(state, dealerSeat)[0]` 含起始座位自身，庄家"轮转"永远取到自己；② 对手全部 all-in、唯一可行动玩家下注已匹配时（如单挑 all-in 补齐大盲），大盲的 option 行动毫无意义，原实现等待其行动导致卡在 pre-flop；③ 多处测试期望的座位/金额核算错误（三人局 b 是小盲不是大盲、盲注已含在 totalContribution 中勿双算、postflop 行动从庄家后开始而非固定 c 先动、克隆状态后断言了旧引用）
+- **修复方式**：① 轮转改为 `seatingOrderFrom(state, dealerSeat + 1)[0]`，createTable 初始 dealerSeat=-1（首手从座位 0 起定庄）；② settleAfterAction 增加特判：canAct 仅剩 1 人且 matched 且存在 all-in 对手 → 直接 runOutBoard；③ 重写测试期望并逐条人工核算
+- **验证**：52 个测试全部通过
+- **教训**：环形座位运算中"从 X 开始"与"从 X 之后开始"必须显式区分；状态机测试失败时先核对扑克规则再改代码，避免把正确实现改错
 
 ## E-006 边池分层公式产生负贡献
 

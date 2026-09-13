@@ -8,7 +8,10 @@ export type PlayerStatus =
   | 'all-in' // 已全下，不再参与下注
   | 'eliminated'; // 筹码为 0，出局
 
-/** 玩家（服务端权威视角） */
+/**
+ * 玩家（服务端权威视角）。
+ * 结构约定为可变：服务端引擎在状态克隆上原位更新，客户端只读展示。
+ */
 export interface Player {
   readonly id: PlayerId;
   readonly name: string;
@@ -20,7 +23,7 @@ export interface Player {
   betThisRound: number;
   /** 本手牌内累计投入（边池计算依据） */
   totalContribution: number;
-  readonly status: PlayerStatus;
+  status: PlayerStatus;
   /** WebSocket 连接状态（断线重连用） */
   isConnected: boolean;
 }

@@ -5,6 +5,11 @@
 
 ## [Unreleased]
 
+### 2026-09-14（M2-4）
+
+- Added: 下注轮次状态机——startHand（庄家轮转/发牌/盲注/单挑规则）、applyAction（fold/check/call/raise/all-in 裁决与最小加注校验）、加注重开行动义务、all-in 短注不重开、BB option、轮次自动推进、legalActionsFor 金额边界、toPublicState 公共快照；15 个单元测试
+- Fixed: 庄家轮转取到自己不移动（dealerSeat 改 -1 起始 + 从下一座起找）；唯一可行动者已匹配且对手全 all-in 时直接 run-out，详见 ERRORS.md E-007
+
 ### 2026-09-14（M2-3）
 
 - Added: 边池计算 buildPots——按投入层级切分主池/边池、弃牌者计入但无资格；5 个单元测试

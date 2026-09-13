@@ -15,7 +15,7 @@
 - [x] 牌组生成与 Fisher-Yates 洗牌
 - [ ] 发牌逻辑（手牌 2 张 + 公共牌 5 张）
 - [x] 手牌评估器（7 选 5 最佳）
-- [ ] 下注轮次状态机（blind / action order / raise 重新行动）
+- [x] 下注轮次状态机（blind / action order / raise 重新行动）
 - [x] all-in 与边池（side pot）计算
 - [ ] 摊牌与胜负判定、平分底池
 - [ ] 单元测试（Vitest，覆盖皇家同花顺、平局、边池等边界）
