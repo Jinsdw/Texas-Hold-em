@@ -14,3 +14,5 @@ apps/desktop/src-tauri/gen/schemas/
 
 # ZCode 会话数据
 .zcode/
+*.db-shm
+*.db-wal
